@@ -3,6 +3,7 @@
         <section class="text-center">
             <h1 class="font-bold text-5xl">Company Search</h1>
             <form action="{{ route('companies.search') }}" method="GET" class="mt-6">
+
                 <input
                     id="company-search"
                     type="text"
@@ -11,9 +12,31 @@
                     class="rounded-xl border border-gray-600 text-white placeholder-gray-400 px-5 py-4 w-full max-w-xl"
                     value="{{ request('query') }}"
                     style="background-color: #1e3a8a !important;">
+
+
+                <div class="mt-4">
+                    <label for="name_sort" class="block text-lg">Sort by Name</label>
+                    <select name="name_sort" id="name_sort" class="rounded-xl border border-gray-600 px-5 py-2 text-white" style="background-color: #1e3a8a !important;">
+                        <option value="">Select...</option>
+                        <option value="asc" {{ request('name_sort') === 'asc' ? 'selected' : '' }}>A-Z</option>
+                        <option value="desc" {{ request('name_sort') === 'desc' ? 'selected' : '' }}>Z-A</option>
+                    </select>
+                </div>
+
+
+                <div class="mt-4">
+                    <label for="date_sort" class="block text-lg">Sort by Date Added</label>
+                    <select name="date_sort" id="date_sort" class="rounded-xl border border-gray-600 px-5 py-2 text-white" style="background-color: #1e3a8a !important;">
+                        <option value="">Select...</option>
+                        <option value="newest" {{ request('date_sort') === 'newest' ? 'selected' : '' }}>Newest First</option>
+                        <option value="oldest" {{ request('date_sort') === 'oldest' ? 'selected' : '' }}>Oldest First</option>
+                    </select>
+                </div>
+
                 <button type="submit" class="mt-4 bg-blue-600 text-white font-bold py-2 px-4 rounded">Search</button>
             </form>
         </section>
+
 
         <div class="container mt-10 text-xl">
             <h1>Companies List</h1>
@@ -33,15 +56,15 @@
                     </thead>
                     <tbody>
                     @foreach($companies as $company)
-                        <tr class="border-b ">
-                            <td class="border p-2 text-center" style="width: 30%; ">{{ $company->name }}</td>
+                        <tr class="border-b">
+                            <td class="border p-2 text-center">{{ $company->name }}</td>
                             <td class="border p-2 text-center">{{ $company->email }}</td>
                             <td class="border p-2">{{ $company->website }}</td>
                             <td class="border p-2 text-center">{{ $company->address }}</td>
                             <td class="border p-2 text-center">{{ $company->phone }}</td>
                             <td class="border p-2">
-                                <a href="{{ route('companies.show', $company->id) }}" class="btn btn-info ">View</a>
-                                <a href="{{ route('companies.edit', $company->id) }}" class="btn btn-warning ">Edit</a>
+                                <a href="{{ route('companies.show', $company->id) }}" class="btn btn-info">View</a>
+                                <a href="{{ route('companies.edit', $company->id) }}" class="btn btn-warning">Edit</a>
                                 <form action="{{ route('companies.destroy', $company->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
@@ -52,6 +75,7 @@
                     @endforeach
                     </tbody>
                 </table>
+
 
                 <div class="mt-6 flex items-center justify-between">
                     <div>
@@ -68,17 +92,17 @@
                                 @if ($i == $companies->currentPage())
                                     <span class="mx-1 px-4 py-2 text-white bg-blue-600 border rounded">{{ $i }}</span>
                                 @else
-                                    <a href="{{ $companies->url($i) }}" class="mx-1 px-4 py-2 t border  rounded">{{ $i }}</a>
+                                    <a href="{{ $companies->url($i) }}" class="mx-1 px-4 py-2 t border rounded">{{ $i }}</a>
                                 @endif
                             @endfor
                         </div>
                     </div>
 
-                    <div class="mt-auto">
+                    <div>
                         @if ($companies->hasMorePages())
-                            <a href="{{ $companies->nextPageUrl() }}" class="  border px-4 py-2 rounded-r-lg">Next &raquo;</a>
+                            <a href="{{ $companies->nextPageUrl() }}" class="border px-4 py-2 rounded-r-lg">Next &raquo;</a>
                         @else
-                            <span class="text-gray-500 cursor-not-allowed border  px-4 py-2 rounded-r-lg">Next &raquo;</span>
+                            <span class="text-gray-500 cursor-not-allowed border px-4 py-2 rounded-r-lg">Next &raquo;</span>
                         @endif
                     </div>
                 </div>

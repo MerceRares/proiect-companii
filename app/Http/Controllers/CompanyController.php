@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
@@ -18,7 +17,7 @@ class CompanyController extends Controller
         return view('companies.index', compact('featuredCompanies', 'recentCompanies', 'companies'));
     }
 
-    // Show the form for creating a new company
+
     public function create()
     {
         return view('companies.create');
@@ -68,18 +67,33 @@ class CompanyController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-
-        $companies = Company::where('name', 'LIKE', '%' . $query . '%')
-            ->orWhere('email', 'LIKE', '%' . $query . '%')
-            ->orWhere('phone', 'LIKE', '%' . $query . '%')
-            ->paginate(10);
+        $nameSort = $request->input('name_sort');
+        $dateSort = $request->input('date_sort');
 
 
-        $noResults = $companies->isEmpty();
+        $companies = Company::query();
 
-        return view('companies.index', compact('companies', 'noResults', 'query'));
+
+        if ($query) {
+            $companies->where('name', 'LIKE', '%' . $query . '%')
+                ->orWhere('email', 'LIKE', '%' . $query . '%');
+
+        }
+
+        if ($nameSort) {
+            $companies->orderBy('name', $nameSort === 'asc' ? 'asc' : 'desc');
+        }
+
+
+        if ($dateSort) {
+            $companies->orderBy('created_at', $dateSort === 'newest' ? 'desc' : 'asc');
+        }
+
+
+        $companies = $companies->paginate(10);
+
+        return view('companies.index', compact('companies'));
     }
-
     public function destroy(Company $company)
     {
         $company->delete();
