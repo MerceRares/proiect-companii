@@ -3,7 +3,6 @@
         <section class="text-center">
             <h1 class="font-bold text-5xl">Company Search</h1>
             <form action="{{ route('companies.search') }}" method="GET" class="mt-6">
-
                 <input
                     id="company-search"
                     type="text"
@@ -13,7 +12,6 @@
                     value="{{ request('query') }}"
                     style="background-color: #1e3a8a !important;">
 
-
                 <div class="mt-4">
                     <label for="name_sort" class="block text-lg">Sort by Name</label>
                     <select name="name_sort" id="name_sort" class="rounded-xl border border-gray-600 px-5 py-2 text-white" style="background-color: #1e3a8a !important;">
@@ -22,7 +20,6 @@
                         <option value="desc" {{ request('name_sort') === 'desc' ? 'selected' : '' }}>Z-A</option>
                     </select>
                 </div>
-
 
                 <div class="mt-4">
                     <label for="date_sort" class="block text-lg">Sort by Date Added</label>
@@ -37,10 +34,10 @@
             </form>
         </section>
 
-
         <div class="container mt-10 text-xl">
             <h1>Companies List</h1>
-            @if($companies->isEmpty())
+
+            @if($companies->isEmpty() && request('query'))
                 <p>No companies found for "{{ request('query') }}".</p>
             @else
                 <table class="table-auto mt-4 w-full">
@@ -76,7 +73,6 @@
                     </tbody>
                 </table>
 
-
                 <div class="mt-6 flex items-center justify-between">
                     <div>
                         @if ($companies->onFirstPage())
@@ -92,7 +88,7 @@
                                 @if ($i == $companies->currentPage())
                                     <span class="mx-1 px-4 py-2 text-white bg-blue-600 border rounded">{{ $i }}</span>
                                 @else
-                                    <a href="{{ $companies->url($i) }}" class="mx-1 px-4 py-2 t border rounded">{{ $i }}</a>
+                                    <a href="{{ $companies->url($i) }}" class="mx-1 px-4 py-2 border rounded">{{ $i }}</a>
                                 @endif
                             @endfor
                         </div>
